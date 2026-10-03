@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: designer-client-edits-ai
+    runtime: docker
+    plan: free
+    healthCheckPath: /health
