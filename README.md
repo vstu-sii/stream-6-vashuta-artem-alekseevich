@@ -14,7 +14,7 @@
 
 Например, если клиент сначала просит уменьшить логотип, а затем пишет, что размер нужно оставить прежним, первая правка должна считаться неактуальной.
 
-В ЛР1 реализована инфраструктурная основа проекта: FastAPI-приложение, Docker-окружение, автоматические тесты, CI и возможность публичного развёртывания.
+В ЛР1 реализуется инфраструктурная основа проекта: каркас репозитория, FastAPI-приложение-заглушка, Docker-окружение, автоматические проверки CI и публичное развёртывание.
 
 ### Целевая аудитория
 
@@ -41,8 +41,34 @@
 |---|---|---|
 | Product / Vision Owner | Мамаев Николай Федорович, САПР-2.3 | Сегмент, гипотезы, use cases, скоуп |
 | AI Engineer | Иванов Александр Викторович, САПР-2.3 | AI-подход, модели, промпты, качество |
-| Delivery Engineer | Меньшенин Максим Сергеевич, САПР-2.3 | Приложение, Docker Compose, CI/CD, прод |
+| Delivery Engineer | Меньшенин Максим Сергеевич, САПР-2.3 | Репозиторий, dev-окружение, CI/CD, прод |
 | AI Quality & Safety Engineer | Вашута Артем Алексеевич, ЭВМ-2.3 | Evals, критерии качества, безопасность |
+
+## Структура репозитория
+
+```text
+.
+├── .github/
+│   ├── workflows/
+│   │   └── ci.yml
+│   └── pull_request_template.md
+├── app/
+│   ├── __init__.py
+│   └── main.py
+├── docs/
+│   └── deploy.md
+├── tests/
+│   └── test_app.py
+├── .dockerignore
+├── .env.example
+├── .gitignore
+├── compose.dev.yml
+├── Dockerfile
+├── pytest.ini
+├── render.yaml
+├── requirements.txt
+└── README.md
+```
 
 ## Текущая архитектура ЛР1
 
@@ -72,31 +98,6 @@ AI-модель и хранение актуального состояния п
 - Docker Compose
 - GitHub Actions
 - Render для публичного развёртывания приложения
-
-## Структура репозитория
-
-```text
-.
-├── .github/
-│   └── workflows/
-│       └── ci.yml
-├── app/
-│   ├── __init__.py
-│   └── main.py
-├── docs/
-│   └── deploy.md
-├── tests/
-│   └── test_app.py
-├── .dockerignore
-├── .env.example
-├── .gitignore
-├── compose.dev.yml
-├── Dockerfile
-├── pytest.ini
-├── render.yaml
-├── requirements.txt
-└── README.md
-```
 
 ## Локальный запуск
 
@@ -149,6 +150,67 @@ docker compose -f compose.dev.yml up --build
 docker compose -f compose.dev.yml down
 ```
 
+## Правила работы с Git
+
+### Основная ветка
+
+Ветка `main` содержит интегрированное состояние проекта. Изменения для лабораторных работ вносятся через отдельные ветки и Pull Request.
+
+Не рекомендуется вносить рабочие изменения непосредственно в `main`.
+
+### Ветки ЛР1
+
+Для каждой роли используется отдельная ветка по шаблону:
+
+```text
+lab1-[role]-initiation
+```
+
+Примеры:
+
+```text
+lab1-product-initiation
+lab1-ai-initiation
+lab1-delivery-initiation
+lab1-quality-initiation
+```
+
+Delivery-ветка:
+
+```text
+lab1-delivery-initiation
+```
+
+### Pull Request
+
+Изменения из ролевой ветки отправляются в `main` через Pull Request.
+
+Название Pull Request для ЛР1:
+
+```text
+Lab1: [Role] — Initiation Deliverables
+```
+
+Для Delivery:
+
+```text
+Lab1: Delivery — Initiation Deliverables
+```
+
+При создании Pull Request автоматически подставляется шаблон из:
+
+```text
+.github/pull_request_template.md
+```
+
+Перед merge необходимо:
+
+1. убедиться, что изменения относятся к своей роли;
+2. проверить актуальность документации;
+3. убедиться, что локальный запуск работает;
+4. дождаться успешного прохождения CI;
+5. не добавлять в Git секреты и локальный файл `.env`.
+
 ## API-заглушка
 
 ### Проверка сервиса
@@ -199,13 +261,7 @@ Workflow находится в:
 .github/workflows/ci.yml
 ```
 
-При `push` в `main` / `lab1-*` и при Pull Request в `main` выполняются:
-
-1. установка зависимостей;
-2. запуск тестов через `pytest`;
-3. сборка Docker image.
-
-Перед сдачей оба CI job должны быть зелёными.
+CI дорабатывается в рамках отдельного Delivery-артефакта ЛР1.
 
 ## Production
 
