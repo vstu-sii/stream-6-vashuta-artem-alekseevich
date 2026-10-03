@@ -3,7 +3,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: client-edits-ai-dev
+    container_name: designer-client-edits-ai-dev
     env_file:
       - .env
     ports:

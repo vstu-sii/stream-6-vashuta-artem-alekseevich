@@ -4,7 +4,7 @@
 
 **AI-система выделения и актуализации клиентских правок из переписки дизайнера**
 
-На ЛР1 разворачивается рабочая hello-world заглушка API. Реальная AI-логика будет добавляться в следующих лабораторных работах.
+В ЛР1 разворачивается рабочая инфраструктурная заглушка API. Реальная AI-логика и LLM-интеграция будут добавляться на следующих этапах проекта.
 
 ## Локальный запуск
 
@@ -28,7 +28,7 @@ Copy-Item .env.example .env
 docker compose -f compose.dev.yml up --build
 ```
 
-После запуска:
+После запуска доступны:
 
 - API: http://localhost:8000
 - Health check: http://localhost:8000/health
@@ -42,21 +42,23 @@ docker compose -f compose.dev.yml down
 
 ## Production deployment — Render
 
-### Настройки
+Для публичного развёртывания используется Render Web Service.
+
+Рекомендуемые настройки:
 
 - Service type: `Web Service`
 - Runtime / Language: `Docker`
-- Branch: `lab1-delivery-initiation` до merge PR, затем `main`
-- Root Directory: пусто
+- Branch до merge PR: `lab1-delivery-initiation`
+- Branch после merge PR: `main`
+- Root Directory: оставить пустым
 - Instance type: `Free`
 - Health Check Path: `/health`
 
-Docker-контейнер запускает приложение командой из `Dockerfile`.
-Приложение слушает `0.0.0.0` и использует переменную окружения `PORT`, предоставляемую Render.
+Приложение запускается командой из `Dockerfile`, слушает `0.0.0.0` и использует переменную окружения `PORT`, которую предоставляет Render.
 
 ## Production URL
 
-После первого успешного деплоя вставить сюда реальную ссылку:
+После успешного деплоя заменить значения ниже на реальные:
 
 ```text
 https://YOUR-SERVICE.onrender.com
@@ -68,17 +70,15 @@ Health check:
 https://YOUR-SERVICE.onrender.com/health
 ```
 
-После получения ссылки необходимо также заменить `TODO` в секции `Production` файла `README.md`.
-
 ## Проверка после деплоя
 
 Должны открываться:
 
-1. `/` — информация о проекте и статус `ok`;
+1. `/` — информация о проекте;
 2. `/health` — статус `healthy`;
 3. `/docs` — Swagger UI.
 
-Пример проверки:
+Пример:
 
 ```bash
 curl https://YOUR-SERVICE.onrender.com/health
@@ -89,6 +89,9 @@ curl https://YOUR-SERVICE.onrender.com/health
 ```json
 {
   "status": "healthy",
-  "service": "client-edits-ai"
+  "service": "designer-client-edits-ai",
+  "version": "0.1.0"
 }
 ```
+
+После получения production URL его необходимо добавить также в `README.md`.

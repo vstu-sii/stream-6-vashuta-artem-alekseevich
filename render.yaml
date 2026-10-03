@@ -1,7 +1,6 @@
 services:
   - type: web
-    name: client-edits-ai
+    name: designer-client-edits-ai
     runtime: docker
     plan: free
     healthCheckPath: /health
-    autoDeployTrigger: commit

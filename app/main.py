@@ -1,30 +1,39 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 PROJECT_NAME = "AI-система выделения и актуализации клиентских правок из переписки дизайнера"
+SERVICE_NAME = "designer-client-edits-ai"
+VERSION = "0.1.0"
+
 
 app = FastAPI(
     title=PROJECT_NAME,
     description=(
-        "Учебная заглушка проекта для ЛР1. "
-        "Система предназначена для выделения клиентских правок из переписки "
-        "и подготовки их к последующей актуализации."
+        "Учебный API проекта. На этапе ЛР1 реализована инфраструктурная "
+        "заглушка без подключения LLM и реальной AI-обработки."
     ),
-    version="0.1.0",
+    version=VERSION,
 )
 
 
-class DemoMessage(BaseModel):
-    text: str
+class DemoRequest(BaseModel):
+    text: str = Field(
+        ...,
+        min_length=1,
+        description="Фрагмент переписки дизайнера с клиентом",
+        examples=["Сделайте логотип меньше и замените цвет кнопки."],
+    )
 
 
 @app.get("/")
 def root():
     return {
         "status": "ok",
+        "service": SERVICE_NAME,
         "project": PROJECT_NAME,
-        "message": "Hello-world: сервис запущен и готов к дальнейшей разработке.",
+        "version": VERSION,
+        "message": "Сервис запущен и готов к дальнейшей разработке.",
     }
 
 
@@ -32,19 +41,25 @@ def root():
 def health():
     return {
         "status": "healthy",
-        "service": "client-edits-ai",
+        "service": SERVICE_NAME,
+        "version": VERSION,
     }
 
 
 @app.post("/api/v1/demo")
-def demo(payload: DemoMessage):
+def demo(payload: DemoRequest):
     """
     Демонстрационная заглушка ЛР1.
-    Реальное AI-выделение правок будет реализовано в следующих лабораторных.
+
+    Реальное выделение и актуализация клиентских правок
+    будут реализованы на следующих этапах проекта.
     """
     return {
         "status": "stub",
         "source_text": payload.text,
         "extracted_edits": [],
-        "message": "AI-обработка пока не подключена: это hello-world заглушка ЛР1.",
+        "message": (
+            "AI-обработка пока не подключена. "
+            "Endpoint демонстрирует будущую точку интеграции."
+        ),
     }
