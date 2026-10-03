@@ -1,5 +1,7 @@
 # AI-система выделения и актуализации клиентских правок из переписки дизайнера
 
+[![CI](https://github.com/vstu-sii/stream-6-vashuta-artem-alekseevich/actions/workflows/ci.yml/badge.svg)](https://github.com/vstu-sii/stream-6-vashuta-artem-alekseevich/actions/workflows/ci.yml)
+
 Учебный проект по дисциплине «Системы искусственного интеллекта».
 
 ## Описание проекта
@@ -64,8 +66,10 @@
 ├── .gitignore
 ├── compose.dev.yml
 ├── Dockerfile
+├── pyproject.toml
 ├── pytest.ini
 ├── render.yaml
+├── requirements-dev.txt
 ├── requirements.txt
 └── README.md
 ```
@@ -94,6 +98,7 @@ AI-модель и хранение актуального состояния п
 - FastAPI
 - Uvicorn
 - Pytest
+- Ruff
 - Docker
 - Docker Compose
 - GitHub Actions
@@ -109,7 +114,7 @@ AI-модель и хранение актуального состояния п
 - Docker Desktop / Docker Engine
 - Docker Compose
 
-Python 3.12 требуется только для локального запуска тестов вне Docker.
+Python 3.12 требуется только для локального запуска тестов и CI-проверок вне Docker.
 
 ### 1. Клонировать репозиторий
 
@@ -175,12 +180,6 @@ lab1-delivery-initiation
 lab1-quality-initiation
 ```
 
-Delivery-ветка:
-
-```text
-lab1-delivery-initiation
-```
-
 ### Pull Request
 
 Изменения из ролевой ветки отправляются в `main` через Pull Request.
@@ -242,26 +241,50 @@ Content-Type: application/json
 
 На ЛР1 endpoint возвращает заглушку. Он показывает место будущей AI-обработки, но не имитирует готовый AI-функционал.
 
-## Тесты
+## Локальные проверки
 
-При установленном Python 3.12:
+Установить зависимости для разработки:
 
 ```bash
-python -m pip install -r requirements.txt
+python -m pip install -r requirements-dev.txt
+```
+
+Проверить стиль кода:
+
+```bash
+python -m ruff check app tests
+```
+
+Проверить форматирование:
+
+```bash
+python -m ruff format --check app tests
+```
+
+Запустить тесты:
+
+```bash
 python -m pytest -v
 ```
 
-Тесты также автоматически запускаются в GitHub Actions.
-
 ## CI
 
-Workflow находится в:
+Workflow расположен в:
 
 ```text
 .github/workflows/ci.yml
 ```
 
-CI дорабатывается в рамках отдельного Delivery-артефакта ЛР1.
+При `push` в `main` / `lab1-*` и при Pull Request в `main` выполняются четыре проверки:
+
+1. **Lint** — `ruff check`;
+2. **Format** — `ruff format --check`;
+3. **Tests** — `pytest`;
+4. **Build** — сборка Docker image.
+
+Статус workflow отображается бейджем в начале README.
+
+Перед merge все обязательные CI checks должны успешно завершиться.
 
 ## Production
 

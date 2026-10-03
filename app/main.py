@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
 
-
 PROJECT_NAME = "AI-система выделения и актуализации клиентских правок из переписки дизайнера"
 SERVICE_NAME = "designer-client-edits-ai"
 VERSION = "0.1.0"
@@ -59,7 +58,6 @@ def demo(payload: DemoRequest):
         "source_text": payload.text,
         "extracted_edits": [],
         "message": (
-            "AI-обработка пока не подключена. "
-            "Endpoint демонстрирует будущую точку интеграции."
+            "AI-обработка пока не подключена. Endpoint демонстрирует будущую точку интеграции."
         ),
     }
